@@ -1,14 +1,14 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const default_routes = require('./routes/default.js');
+const api_routes = require('./routes/api.js');
 
-app.use(express.static(path.join(__dirname, 'assets')));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'assets', 'index.html'));
-});
+app.use(express.static(path.join(__dirname, 'src')));
+app.use('/', default_routes);
+app.use('/api/', api_routes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
