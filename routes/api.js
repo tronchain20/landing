@@ -86,7 +86,7 @@ router.get('/getUserData', async (req, res) => {
     }
     else {
         res.json({
-            
+            // write here
         })
     }
 });
