@@ -1,15 +1,74 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>$YIELD</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <span id="wallet-balance">0</span>
-    <span id="usd-approx">~ 0 USD</span>
-    <span id="friends-invited-counter">0</span>
-    <button id="withdraw-btn">Withdraw</button>
-    <button id="copy-invite-link">Copy invite link</button>
-    <script src="./js/dataLoader.js"></script>
+<div class="container">
+    <div id="airdrop-page" class="page active">
+        <div class="yield-text">$YIELD</div>
+        <div class="amount">300 000</div>
+        <div class="usd-value">~ 134134 USD</div>
+        <div class="info-text">The approximate value of coins in USD is given, after dropping a coin</div>
+        <div class="withdraw-button">
+            <img src="img/minus-icon.svg" alt="Withdraw" class="withdraw-icon">
+            <span class="withdraw-text">Withdraw</span>
+        </div>
+        <div class="withdraw-info">
+            <img src="img/info-icon.svg" alt="Info" class="info-icon">
+            Withdrawals will be available after the timer expires
+        </div>
+    </div>
+    <div id="invites-page" class="page">
+        <h1 class="invited-friends">0</h1>
+        <h2 class="invited-friends-label">Invited friends</h2>
+        <p class="invite-info">Invite your friends to participate in Airdrop and get $YIELD 125,000 reward for each!</p>
+        <div class="invite-button">
+            <img src="img/add-person-icon.svg" alt="Invite" class="invite-icon">
+            <span>Invite a friend</span>
+        </div>
+        <div class="copy-link-button">
+            <img src="img/share-icon.svg" alt="Copy" class="copy-icon">
+            <span>Copy invite link</span>
+        </div>
+        <h3 class="invitation-list-title">Invitation list</h3>
+        <div class="invitation-list">
+            <div class="invitation-item">
+                <span class="invitee-name">baccaraaa</span>
+                <span class="invitee-reward">10 000 $YIELD</span>
+            </div>
+            <div class="invitation-item">
+                <span class="invitee-name">kouka don..</span>
+                <span class="invitee-reward">10 000 $YIELD</span>
+            </div>
+        </div>
+    </div>
+    <div id="tasks-page" class="page">
+        <h2>Tasks</h2>
+        <p>каминг сун..</p>
+    </div>
+    <div class="menu">
+        <div class="menu-item active" data-page="airdrop-page">
+            <img src="img/airdrop-icon-active.svg" alt="Airdrop" class="menu-icon active">
+            <img src="img/airdrop-icon.svg" alt="Airdrop" class="menu-icon inactive">
+            <div class="menu-label">Airdrop</div>
+        </div>
+        <div class="menu-item" data-page="invites-page">
+            <img src="img/invites-icon-active.svg" alt="Invites" class="menu-icon active">
+            <img src="img/invites-icon.svg" alt="Invites" class="menu-icon inactive">
+            <div class="menu-label">Invites</div>
+        </div>
+        <div class="menu-item" data-page="tasks-page">
+            <img src="img/tasks-icon-active.svg" alt="Tasks" class="menu-icon active">
+            <img src="img/tasks-icon.svg" alt="Tasks" class="menu-icon inactive">
+            <div class="menu-label">Tasks</div>
+        </div>
+        <div class="slider"></div>
+    </div>
+</div>
+<script src="js/script.js"></script>
 </body>
 </html>

@@ -62,4 +62,33 @@ router.post('/authorize', async (req, res) => {
     }
 });
 
+router.get('/getLinks', async (req, res) => {
+    const token = req.query.token;
+    if (token === undefined) {
+        res.json({ 
+            error: 'token_empty' 
+        });
+    }
+    else {
+        res.json({
+            share: `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${process.env.TELEGRAM_BOT_NAME}/start=ref_${token}`)}&text=${encodeURIComponent(process.env.TELEGRAM_SHARE_BUTTON_TEXT)}`,
+            ref: `https://t.me/${process.env.TELEGRAM_BOT_NAME}/start=ref_${token}`
+        })
+    }
+});
+
+router.get('/getUserData', async (req, res) => {
+    const token = req.query.token;
+    if (token === undefined) {
+        res.json({ 
+            error: 'token_empty' 
+        });
+    }
+    else {
+        res.json({
+            
+        })
+    }
+});
+
 module.exports = router;

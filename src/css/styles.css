@@ -1,0 +1,320 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #270B42;
+    color: #FFFFFF;
+}
+
+.container {
+    position: relative;
+    width: 390px;
+    height: 731px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.page {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 75px);
+    top: 0;
+    left: 0;
+}
+
+.page.active {
+    display: block;
+}
+
+.yield-text {
+    position: absolute;
+    width: 169px;
+    height: 18px;
+    left: 111px;
+    top: 228px;
+    font-family: 'Cygre ExtraBold', sans-serif;
+    font-weight: 800;
+    font-size: 51px;
+    line-height: 18px;
+    text-align: center;
+    color: #9B51E0;
+}
+
+.amount {
+    position: absolute;
+    height: 18px;
+    left: 101px;
+    right: 100px;
+    top: 178px;
+    font-family: 'Cygre Medium', sans-serif;
+    font-weight: 500;
+    font-size: 54px;
+    line-height: 18px;
+    text-align: center;
+}
+
+.usd-value {
+    position: absolute;
+    width: 142px;
+    height: 18px;
+    left: 124px;
+    top: 291px;
+    font-family: 'Cygre Book', sans-serif;
+    font-weight: 350;
+    font-size: 26px;
+    line-height: 18px;
+    text-align: center;
+    letter-spacing: -0.078px;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.info-text {
+    position: absolute;
+    width: 280px;
+    height: 30px;
+    left: 55px;
+    top: 320px;
+    font-size: 12px;
+    line-height: 15px;
+    text-align: center;
+    color: #9B51E0;
+}
+
+.withdraw-button {
+    position: absolute;
+    width: 372px;
+    height: 62px;
+    left: 9px;
+    top: 395px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.withdraw-text {
+    font-family: 'Cygre Medium', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.withdraw-icon {
+    margin-right: 10px;
+    width: 24px;
+    height: 24px;
+}
+
+.withdraw-info {
+    position: absolute;
+    width: 324px;
+    height: 22px;
+    left: 40px;
+    top: 465px;
+    font-size: 12px;
+    line-height: 15px;
+    color: #9B51E0;
+    display: flex;
+    align-items: center;
+}
+
+.info-icon {
+    margin-right: 5px;
+    width: 17px;
+    height: 17px;
+}
+
+.menu {
+    position: absolute;
+    height: 75px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.11);
+    backdrop-filter: blur(20px);
+}
+
+.menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+}
+
+.menu-icon {
+    width: 20px;
+    height: 20px;
+    margin-bottom: 5px;
+}
+
+.menu-icon.active {
+    display: none;
+}
+
+.menu-item.active .menu-icon.active {
+    display: block;
+}
+
+.menu-item.active .menu-icon.inactive {
+    display: none;
+}
+
+.menu-label {
+    font-family: 'Cygre Medium', sans-serif;
+    font-size: 11px;
+    color: #F2F2F2;
+}
+
+.menu-item.active .menu-label {
+    color: #9B51E0;
+}
+
+.slider {
+    position: absolute;
+    width: 50px;
+    height: 1px;
+    background-color: #9B51E0;
+    top: -1px;
+    left: 0;
+    transition: left 0.3s ease;
+    z-index: 1;
+}
+
+
+/* страница с инвайтами */
+
+#invites-page {
+    position: relative;
+    height: 100%;
+}
+
+#invites-page .invited-friends {
+    position: absolute;
+    width: 100%;
+    top: 80px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 54px;
+    line-height: 18px;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+#invites-page .invited-friends-label {
+    position: absolute;
+    width: 100%;
+    top: 136px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 51px;
+    line-height: 18px;
+    text-align: center;
+    color: #9B51E0;
+}
+
+#invites-page .invite-info {
+    position: absolute;
+    width: 280px;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 208px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 15px;
+    text-align: center;
+    color: #9B51E0;
+}
+
+#invites-page .invite-button,
+#invites-page .copy-link-button {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 372px;
+    height: 62px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+}
+
+#invites-page .invite-button {
+    top: 266px;
+}
+
+#invites-page .copy-link-button {
+    top: 333px;
+}
+
+#invites-page .invite-icon,
+#invites-page .copy-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 15px;
+}
+
+#invites-page .invite-button span,
+#invites-page .copy-link-button span {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 18px;
+    color: #FFFFFF;
+}
+
+#invites-page .invitation-list-title {
+    position: absolute;
+    left: 9px;
+    top: 398px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 34px;
+    line-height: 26px;
+    color: #FFFFFF;
+}
+
+#invites-page .invitation-list {
+    position: absolute;
+    top: 465px;
+    left: 0;
+    right: 0;
+}
+
+#invites-page .invitation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    height: 42px;
+}
+
+#invites-page .invitee-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 22px;
+    letter-spacing: -0.43px;
+    color: #F2F2F2;
+}
+
+#invites-page .invitee-reward {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 22px;
+    text-align: right;
+    letter-spacing: -0.43px;
+    color: #9B51E0;
+}
