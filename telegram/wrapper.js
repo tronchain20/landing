@@ -15,8 +15,9 @@ async function polling() {
                 try {
                     ref_target = ctx.message.text.replace('/start ref_', '');
                     let referals = await landing_sql.fetchParameter(ref_target, 'referals');
+                    console.log('referals => ' + referals);
 
-                    if (referals === '{}') {
+                    if (referals === '[]') {
                         referals = [ctx.from.id];
                     }
                     else {

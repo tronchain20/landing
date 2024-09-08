@@ -114,12 +114,20 @@ document.addEventListener('DOMContentLoaded', function() {
     updatePageData();
 });
 
-function createTasks() {
+async function createTasks() {
+    const response = await fetch('/api/getUserData?token=' + token);
+    const data = await response.json();
+
+    if (data.error) {
+        console.error('Error fetching user data: ' + data.error);
+        return;
+    }
+
     const tasksContainer = document.querySelector('#tasks-page .tasks-list');
     const tasks = [
-        { name: 'Join TON Community', reward: '15 000 $YIELD', completed: false, icon: 'task1.svg' },
-        { name: 'Join YIELD Community', reward: '100 000 $YIELD', completed: false, icon: 'task2.svg' },
-        { name: 'Invite 3 friends', reward: '150 000 $YIELD', completed: true, progress: 3, total: 3, icon: 'task3.svg' },
+        { name: 'Join TON Community', reward: '1 000 $YIELD', completed: false, icon: 'task1.svg' },
+        { name: 'Join our Community', reward: '1 000 $YIELD', completed: true, icon: 'task2.svg' },
+        { name: 'Invite friends', reward: '5 000 $YIELD for each friend', completed: false, progress: data.friends.length, total: 50, icon: 'task3.svg' },
     ];
 
     tasks.forEach(task => {
