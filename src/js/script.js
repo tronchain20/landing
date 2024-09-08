@@ -81,9 +81,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            document.querySelector('.amount').textContent = data.amount || 0;
-            document.querySelector('.usd-value').textContent = data.usdValue || 0;
-            document.querySelector('.invited-friends').textContent = data.invitedFriends || 0;
+            document.querySelector('.amount').textContent = Intl.NumberFormat('ru-RU').format(Number(data.reward)).replace(/,/g, ' ') || 0;
+            document.querySelector('.usd-value').textContent = `~ ${Intl.NumberFormat('ru-RU').format(Number(data.reward_usd)).replace(/,/g, ' ')} USD` || `~ 0 USD`;
+            document.querySelector('.invited-friends').textContent = data.friends.length || 0;
+
+            const invitationList = document.querySelector('.invitation-list');
+            data.friends.forEach(async friend => {
+
+                const response = await fetch('/api/getDisplayData?token=' + friend);
+                const friendData = await response.json();          
+
+                const invitationItem = document.createElement('div');
+                invitationItem.className = 'invitation-item';
+
+                const inviteeName = document.createElement('span');
+                inviteeName.className = 'invitee-name';
+                inviteeName.textContent = friendData.alias;
+
+                const inviteeReward = document.createElement('span');
+                inviteeReward.className = 'invitee-reward';
+                inviteeReward.textContent = '10 000 $YIELD';
+
+                invitationItem.appendChild(inviteeName);
+                invitationItem.appendChild(inviteeReward);
+                invitationList.appendChild(invitationItem);
+            });
         }
         catch (error) {
             console.error('Error updating page data: ' + error);
@@ -91,3 +113,49 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     updatePageData();
 });
+
+function createTasks() {
+    const tasksContainer = document.querySelector('#tasks-page .tasks-list');
+    const tasks = [
+        { name: 'Join TON Community', reward: '15 000 $YIELD', completed: false, icon: 'task1.svg' },
+        { name: 'Join YIELD Community', reward: '100 000 $YIELD', completed: false, icon: 'task2.svg' },
+        { name: 'Invite 3 friends', reward: '150 000 $YIELD', completed: true, progress: 3, total: 3, icon: 'task3.svg' },
+    ];
+
+    tasks.forEach(task => {
+        const taskElement = document.createElement('div');
+        taskElement.classList.add('task-item');
+
+        let statusHtml;
+        if (task.progress !== undefined) {
+            statusHtml = `<span class="task-status">${task.progress}/${task.total}</span>`;
+        } else {
+            statusHtml = `<span class="task-status">${task.completed ? 'Completed' : 'Join'}</span>`;
+        }
+
+        taskElement.innerHTML = `
+            <div class="task-icon">
+                <img src="img/${task.icon}" alt="${task.name} icon">
+            </div>
+            <div class="task-info">
+                <span class="task-name">${task.name}</span>
+                <span class="task-reward">${task.reward}</span>
+            </div>
+            ${statusHtml}
+        `;
+
+        if (task.progress !== undefined) {
+            const progressBar = document.createElement('div');
+            progressBar.classList.add('task-progress-bar');
+            const progress = document.createElement('div');
+            progress.classList.add('task-progress');
+            progress.style.width = `${(task.progress / task.total) * 100}%`;
+            progressBar.appendChild(progress);
+            taskElement.appendChild(progressBar);
+        }
+
+        tasksContainer.appendChild(taskElement);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', createTasks);

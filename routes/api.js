@@ -30,7 +30,7 @@ router.post('/setRewardSize', async (req, res) => {
                 return;
             }
 
-            const size = helper.getRandomNumber(5111, 26666);
+            const size = helper.getRandomNumber(27777, 73333);
             await sql.updateParameter(token, 'reward', size);
 
             res.json({
@@ -71,8 +71,8 @@ router.get('/getLinks', async (req, res) => {
     }
     else {
         res.json({
-            share: `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${process.env.TELEGRAM_BOT_NAME}/start=ref_${token}`)}&text=${encodeURIComponent(process.env.TELEGRAM_SHARE_BUTTON_TEXT)}`,
-            ref: `https://t.me/${process.env.TELEGRAM_BOT_NAME}/start=ref_${token}`
+            share: `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${process.env.TELEGRAM_BOT_NAME}?start=ref_${token}`)}&text=${encodeURIComponent(process.env.TELEGRAM_SHARE_BUTTON_TEXT)}`,
+            ref: `https://t.me/${process.env.TELEGRAM_BOT_NAME}?start=ref_${token}`
         })
     }
 });
@@ -85,8 +85,32 @@ router.get('/getUserData', async (req, res) => {
         });
     }
     else {
+        const referals = JSON.parse(await sql.fetchParameter(token, 'referals'));
+        const reward = await sql.fetchParameter(token, 'reward');
+        const reward_usd = Math.round(reward * 0.023);
+
         res.json({
-            // write here
+            reward: reward,
+            reward_usd: reward_usd,
+            friends: referals
+        })
+    }
+});
+
+router.get('/getDisplayData', async (req, res) => {
+    const token = req.query.token;
+    if (token === undefined) {
+        res.json({ 
+            error: 'token_empty' 
+        });
+    }
+    else {
+        const username = await sql.fetchParameter(token, 'telegram_username');
+        const alias = await sql.fetchParameter(token, 'alias');
+
+        res.json({
+            username: username,
+            alias: alias
         })
     }
 });

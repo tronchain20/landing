@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { Bot, GrammyError, HttpError, InputFile } = require('grammy');
 const sql = require('./telegramSQL.js');
+const landing_sql = require('../extensions/sql.js');
 
 async function polling() {
     const bot = new Bot(process.env.TELEGRAM_BOT_API);
@@ -9,9 +10,34 @@ async function polling() {
     bot.command('start', async (ctx) => {
 
         if (!await sql.isProfileExists(ctx.from.id)) {
-            if (!await sql.makeProfile(ctx.from.id, ctx.from.username)) {
-                await ctx.reply('🚫 Sorry, an error was occured, try again later...');
-                return;
+            if (ctx.message.text.includes('ref')) {
+                let ref_target;
+                try {
+                    ref_target = ctx.message.text.replace('/start ref_', '');
+                    let referals = await landing_sql.fetchParameter(ref_target, 'referals');
+
+                    if (referals === '{}') {
+                        referals = [ctx.from.id];
+                    }
+                    else {
+                        const massive = JSON.parse(referals);
+                        massive.push(ctx.from.id);
+                        referals = massive;
+                    }
+
+                    await landing_sql.runQuery('UPDATE landing SET referals = ? WHERE telegram_id = ?', [
+                        JSON.stringify(referals),
+                        ref_target
+                    ]);
+                }
+                catch (error) {
+                    console.log('Skipping referal: ' + error);
+                }
+
+                if (!await sql.makeProfile(ctx.from.id, ctx.from.username)) {
+                    await ctx.reply('🚫 Sorry, an error was occured, try again later...');
+                    return;
+                }
             }
         }
 
@@ -19,8 +45,9 @@ async function polling() {
         {
             reply_markup: {
                 inline_keyboard: [
-                    [{ text: '👒 Join Community', url: process.env.TELEGRAM_COMMUNITY_URL }],
-                    [{ text: 'Open app', web_app: {
+                    [{ text: 'Join our community', url: process.env.TELEGRAM_COMMUNITY_URL }],
+                    [{ text: 'Open app', web_app: 
+                    {
                         url: process.env.TELEGRAM_WEBAPP_URL
                     }}],
                 ]
@@ -63,4 +90,5 @@ async function polling() {
 
     bot.start();
 }
-polling();
+
+module.exports = polling;

@@ -46,7 +46,7 @@ body, html {
 .amount {
     position: absolute;
     height: 18px;
-    left: 101px;
+    left: 44px;
     right: 100px;
     top: 178px;
     font-family: 'Cygre Medium', sans-serif;
@@ -54,13 +54,14 @@ body, html {
     font-size: 54px;
     line-height: 18px;
     text-align: center;
+    width: 300px;
 }
 
 .usd-value {
     position: absolute;
-    width: 142px;
+    width: 242px;
     height: 18px;
-    left: 124px;
+    left: 74px;
     top: 291px;
     font-family: 'Cygre Book', sans-serif;
     font-weight: 350;
@@ -317,4 +318,407 @@ body, html {
     text-align: right;
     letter-spacing: -0.43px;
     color: #9B51E0;
+}
+
+/*  онбординг */
+
+.onboarding-container {
+    position: relative;
+    width: 390px;
+    height: 731px;
+    background: #270B42;
+    overflow: hidden;
+    padding-top: 240px;
+}
+
+.background-ellipse {
+    position: absolute;
+    width: 372px;
+    height: 372px;
+    left: -127px;
+    top: -149px;
+    background: rgba(159, 58, 255, 0.76);
+    filter: blur(161.45px);
+}
+
+h1 {
+    position: absolute;
+    width: 316px;
+    height: 64px;
+    left: 14px;
+    top: 114px;
+    font-weight: 800;
+    font-size: 43px;
+    line-height: 32px;
+    color: #FFFFFF;
+}
+
+.step {
+    position: absolute;
+    left: 14px;
+    width: 306px;
+    height: 32px;
+    font-weight: 350;
+    font-size: 22px;
+    line-height: 32px;
+    color: #FFFFFF;
+}
+
+.step:nth-child(2) { top: 239px; }
+.step:nth-child(3) { top: 315px; }
+.step:nth-child(4) { top: 391px; }
+
+.progress-bar {
+    position: absolute;
+    width: 351px;
+    height: 18px;
+    background: #9850DC;
+    border-radius: 5px;
+    margin-top: -220px;
+}
+
+.progress-bar:nth-child(1) { top: 281px; }
+.progress-bar:nth-child(2) { top: 357px; }
+.progress-bar:nth-child(3) { top: 433px; }
+
+.progress {
+    width: 0;
+    height: 100%;
+    background-color: #FFFFFF;
+    transition: width 1s ease-in-out;
+}
+
+.reward {
+    position: absolute;
+    width: 354px;
+    height: 32px;
+    left: 18px;
+    top: 512px;
+    font-weight: 500;
+    font-size: 25px;
+    line-height: 32px;
+    text-align: center;
+    color: #FFFFFF;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.collect-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 19px 121px;
+    gap: 15px;
+    position: absolute;
+    width: 372px;
+    height: 62px;
+    left: 9px;
+    top: 554px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+}
+
+
+.collect-button span {
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 18px;
+    color: #FFFFFF;
+}
+
+.collect-button::before {
+    content: '';
+    width: 24px;
+    height: 24px;
+    background: #FFFFFF;
+    mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>') no-repeat 50% 50%;
+    mask-size: cover;
+}
+
+.onboarding-reward-text {
+    position: absolute;
+    left: 12px;
+    font-size: 21px;
+    top: 500px;
+
+}
+
+/* Стили для страницы Tasks */
+#tasks-page {
+    padding: 20px;
+}
+
+#tasks-page .tasks-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 34px;
+    line-height: 26px;
+    color: #FFFFFF;
+    margin-bottom: 20px;
+}
+
+#tasks-page .tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.task-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 22px;
+    color: #F2F2F2;
+    margin-bottom: 5px;
+}
+
+.task-reward {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #9B51E0;
+}
+
+.task-status {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    color: #9B51E0;
+}
+
+/* Обновленные стили для страницы Tasks */
+#tasks-page {
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+#tasks-page .tasks-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 34px;
+    line-height: 26px;
+    color: #FFFFFF;
+    margin-bottom: 20px;
+}
+
+#tasks-page .tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.task-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.task-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.task-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 22px;
+    color: #F2F2F2;
+    margin-bottom: 5px;
+}
+
+.task-reward {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #9B51E0;
+}
+
+.task-status {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    color: #9B51E0;
+    white-space: nowrap;
+    margin-left: 10px;
+}
+
+.task-item {
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.task-progress-bar {
+    position: absolute;
+    bottom: 1px;
+    left: 7px;
+    width: 96%;
+    height: 3px;
+    background-color: rgba(155, 81, 224, 0.3);
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+    overflow: hidden;
+}
+
+.task-progress {
+    height: 100%;
+    background-color: #9B51E0;
+    transition: width 0.3s ease;
+}
+
+.task-item {
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.task-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.task-icon img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.task-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.task-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 22px;
+    color: #F2F2F2;
+    margin-bottom: 5px;
+}
+
+.task-reward {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #9B51E0;
+}
+
+/* backграунд */
+.container {
+    position: relative;
+    width: 390px;
+    height: 731px;
+    margin: 0 auto;
+    overflow: hidden;
+    background: linear-gradient(135deg, #270B42 0%, #3D1063 100%);
+}
+
+/* Добавим легкий узор поверх градиента */
+.container {
+    position: relative;
+    width: 390px;
+    height: 731px;
+    margin: 0 auto;
+    overflow: hidden;
+    background: linear-gradient(135deg, #270B42 0%, #3D1063 100%);
+}
+
+/* Добавим легкий узор поверх градиента */
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+            radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px),
+            radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    pointer-events: none;
+}
+
+.page {
+    position: relative;
+    z-index: 1;
+}
+
+/* Убедимся, что все интерактивные элементы находятся поверх фона */
+.menu, .withdraw-button, .invite-button, .copy-link-button, .task-item {
+    position: relative;
+    z-index: 2;
+}
+#invites-page {
+    position: relative;
+    height: calc(100% - 75px); /* Вычитаем высоту меню */
+    overflow-y: auto; /* Добавляем прокрутку, если содержимое не помещается */
+}
+
+body, html {
+    overflow-x: hidden;
+}
+
+#invites-page {
+    position: relative;
+    height: calc(100% - 75px); /* Вычитаем высоту меню */
+    overflow-y: auto; /* Разрешаем вертикальную прокрутку */
+    overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
+    -webkit-overflow-scrolling: touch; /* Для плавной прокрутки на iOS */
+}
+
+#invites-page .invitation-list {
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 15px; /* Добавляем отступ справа, чтобы компенсировать полосу прокрутки */
 }
