@@ -47,55 +47,6 @@ async function __authorize(wa) {
     }
 }
 
-async function authorize(id, username, alias) {
-    const response = await fetch('/api/authorize', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            id: id,
-            username: username,
-            alias: alias
-        }),
-    });
-
-    const data = await response.json();
-    if (data.ok === 'authorized' || data.error === 'already_authorized') {
-        console.log('Authorized.');
-        await fetchRewardSize(id);
-    }
-}
-
-async function fetchRewardSize(token) {
-    const response = await fetch(`/api/setRewardSize?token=${token}`, {
-        method: 'POST'
-    });
-    const data = await response.json();
-
-    if (data.error === 'reward_already_set') {
-        window.location.href = 'app.html?h=' + token;
-    }
-
-    const rewardElement = document.querySelector('.onboarding-reward-text');
-    try {
-        if (data.error) {
-            if (data.error === 'reward_already_set') {
-                rewardElement.textContent = `🎉 Your Reward — ${data.rewardSize} $YIELD`;
-            }
-            else {
-                rewardElement.textContent = `🎉 Your Reward — 0e $YIELD`;
-                console.error(data.error);
-            }
-        } else {
-            rewardElement.textContent = `🎉 Your Reward — ${data.rewardSize} $YIELD`;
-        }
-    } catch (error) {
-        rewardElement.textContent = `🎉 Your Reward — 0e $YIELD`;
-        console.error(error);
-    }
-}
-
 function showStepsWithDelay(reward) {
     const steps = document.querySelectorAll('.step');
     const rewardText = document.querySelector('.onboarding-reward-text');
@@ -135,7 +86,7 @@ async function updateReward() {
     } 
     else {
         console.error('Object <WA> not found');
-        await __authorize(wa);
+        await __authorize(wa); // readress
     }
 }
 updateReward();

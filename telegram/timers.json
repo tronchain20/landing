@@ -1,0 +1,17 @@
+{
+    "timer1": {
+        "enabled": true,
+        "text": "*Timer text1*",
+        "time": 120000
+    },
+    "timer2": {
+        "enabled": false,
+        "text": "*Timer text2*",
+        "time": 120000
+    },
+    "timer3": {
+        "enabled": false,
+        "text": "*Timer text3*",
+        "time": 120000
+    }
+}

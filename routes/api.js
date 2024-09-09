@@ -72,7 +72,9 @@ router.get('/getLinks', async (req, res) => {
     else {
         res.json({
             share: `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/${process.env.TELEGRAM_BOT_NAME}?start=ref_${token}`)}&text=${encodeURIComponent(process.env.TELEGRAM_SHARE_BUTTON_TEXT)}`,
-            ref: `https://t.me/${process.env.TELEGRAM_BOT_NAME}?start=ref_${token}`
+            ref: `https://t.me/${process.env.TELEGRAM_BOT_NAME}?start=ref_${token}`,
+            ton_community: 'https://t.me/toncoin',
+            community: process.env.TELEGRAM_COMMUNITY_URL
         })
     }
 });
@@ -88,11 +90,15 @@ router.get('/getUserData', async (req, res) => {
         const referals = JSON.parse(await sql.fetchParameter(token, 'referals'));
         const reward = await sql.fetchParameter(token, 'reward');
         const reward_usd = Math.round(reward * 0.023);
+        const isJoinedTONCommunity = (await sql.fetchParameter(token, 'isJoinedTONCommunity') ? true : false);
+        const isJoinedCommunity = (await sql.fetchParameter(token, 'isJoinedTONCommunity') ? true : false);
 
         res.json({
             reward: reward,
             reward_usd: reward_usd,
-            friends: referals
+            friends: referals,
+            TONCommunity: isJoinedTONCommunity,
+            Community: isJoinedCommunity
         })
     }
 });

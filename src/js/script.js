@@ -66,7 +66,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         catch (error) {
-            await navigator.clipboard.writeText('https://t.me');
             console.error('Error copying link to clipboard: ' + error)
         }
     });
@@ -118,6 +117,9 @@ async function createTasks() {
     const response = await fetch('/api/getUserData?token=' + token);
     const data = await response.json();
 
+    const links = await fetch('/api/getLinks?token=' + token);
+    const links_data = await links.json();
+
     if (data.error) {
         console.error('Error fetching user data: ' + data.error);
         return;
@@ -125,8 +127,8 @@ async function createTasks() {
 
     const tasksContainer = document.querySelector('#tasks-page .tasks-list');
     const tasks = [
-        { name: 'Join TON Community', reward: '1 000 $YIELD', completed: false, icon: 'task1.svg' },
-        { name: 'Join our Community', reward: '1 000 $YIELD', completed: true, icon: 'task2.svg' },
+        { name: 'Join TON Community', reward: '1 000 $YIELD', completed: data.TONCommunity, icon: 'task1.svg', link: links_data.ton_community },
+        { name: 'Join our Community', reward: '1 000 $YIELD', completed: data.Community, icon: 'task2.svg', link: links_data.community },
         { name: 'Invite friends', reward: '5 000 $YIELD for each friend', completed: false, progress: data.friends.length, total: 50, icon: 'task3.svg' },
     ];
 
@@ -138,7 +140,7 @@ async function createTasks() {
         if (task.progress !== undefined) {
             statusHtml = `<span class="task-status">${task.progress}/${task.total}</span>`;
         } else {
-            statusHtml = `<span class="task-status">${task.completed ? 'Completed' : 'Join'}</span>`;
+            statusHtml = `<span class="task-status ${task.completed ? 'completed' : 'join'}">${task.completed ? 'Completed' : 'Join'}</span>`;
         }
 
         taskElement.innerHTML = `
@@ -160,6 +162,16 @@ async function createTasks() {
             progress.style.width = `${(task.progress / task.total) * 100}%`;
             progressBar.appendChild(progress);
             taskElement.appendChild(progressBar);
+        }
+
+        if (!task.completed && task.link) {
+            const joinButton = taskElement.querySelector('.task-status.join');
+            if (joinButton) {
+                joinButton.addEventListener('click', () => {
+                    window.open(task.link, '_blank');
+                });
+                joinButton.style.cursor = 'pointer';
+            }
         }
 
         tasksContainer.appendChild(taskElement);
