@@ -1,4 +1,5 @@
 //const wa = window.Telegram.WebApp.initData;
+
 const wa = {
     user: {
         id: 869100423,
@@ -86,7 +87,8 @@ async function updateReward() {
     } 
     else {
         console.error('Object <WA> not found');
-        await __authorize(wa); // readress
+        //window.location.href = 'error.html';
+        await __authorize(wa);
     }
 }
 updateReward();

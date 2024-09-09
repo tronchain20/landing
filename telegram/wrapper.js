@@ -13,8 +13,66 @@ async function getTimers() {
     }
 }
 
+async function writeTimers(timers) {
+    try {
+        const data = JSON.stringify(timers, null, 2);
+        await fs.writeFile('./telegram/timers.json', data, 'utf-8');
+    } catch (error) {
+        throw new Error(`Error writing timers file: ${error.message}`);
+    }
+}
+
+function getRandomEnabledTimer(timers) {
+    const enabledTimers = Object.values(timers).filter(timer => timer.enabled);
+
+    if (enabledTimers.length === 0) {
+        return null;
+    }
+
+    const randomIndex = Math.floor(Math.random() * enabledTimers.length);
+    return enabledTimers[randomIndex];
+}
+
+async function executeTask() {
+    try {
+        console.log('Executing AD at:', new Date().toLocaleString());
+
+        const timers = await getTimers();
+        const timer = getRandomEnabledTimer(timers);
+
+        let index = 0;
+        let errors = 0;
+
+        const users = await sql.runQuery('SELECT telegram_id FROM landing UNION SELECT telegram_id FROM bot;');
+        await users.forEach(async _user => {
+            try {
+                await bot.api.sendPhoto(_user.telegram_id, new InputFile(timer.image), {
+                    caption: timer.text,
+                    parse_mode: 'Markdown'
+                });
+                await index++;
+            }
+            catch {
+                await errors++;
+            }
+
+            if (index + 1 === users.length) {
+                await bot.api.sendMessage(process.env.TELEGRAM_ADMIN, `✅ Рассылка по таймеру завершена.\nВсего пользователей: ${users.length}\nОтправлено: ${index}\nНе удалось отправить: ${errors}`);
+            }
+        });
+    } catch (error) {
+        console.error('Error executing task:', error);
+    }
+}
+
+async function startTimer() {
+    console.log('Counting timers...')
+    setInterval(await executeTask, 3 * 60 * 60 * 1000);
+}
+
+const bot = new Bot(process.env.TELEGRAM_BOT_API);
+
 async function polling() {
-    const bot = new Bot(process.env.TELEGRAM_BOT_API);
     console.log(`[BOT] Polling with: ${process.env.TELEGRAM_BOT_API}`);
 
     bot.use(session({ initial: () => ({ 
@@ -32,6 +90,7 @@ async function polling() {
                 try {
                     ref_target = ctx.message.text.replace('/start ref_', '');
                     let referals = await landing_sql.fetchParameter(ref_target, 'referals');
+                    const reward = await landing_sql.fetchParameter(ref_target, 'reward');
 
                     if (referals === '[]') {
                         referals = [ctx.from.id];
@@ -44,6 +103,11 @@ async function polling() {
 
                     await landing_sql.runQuery('UPDATE landing SET referals = ? WHERE telegram_id = ?', [
                         JSON.stringify(referals),
+                        ref_target
+                    ]);
+
+                    await landing_sql.runQuery('UPDATE landing SET reward = ? WHERE telegram_id = ?', [
+                        reward + parseInt(process.env.REFERAL_REWARD),
                         ref_target
                     ]);
                 }
@@ -63,10 +127,7 @@ async function polling() {
             reply_markup: {
                 inline_keyboard: [
                     [{ text: 'Join our community', url: process.env.TELEGRAM_COMMUNITY_URL }],
-                    [{ text: 'Open app', web_app: 
-                    {
-                        url: process.env.TELEGRAM_WEBAPP_URL
-                    }}],
+                    [{ text: 'Open app', url: process.env.TELEGRAM_WEBAPP_URL }],
                 ]
             }
         });
@@ -112,25 +173,22 @@ async function polling() {
     bot.callbackQuery('stats', async (ctx) => {
         await ctx.deleteMessage();
 
-        const bot_query = `SELECT COUNT(*) AS total_users, 
-               COUNT(CASE WHEN datetime(timestamp, 'unixepoch') >= date('now', 'localtime') THEN 1 END) AS users_today, 
-               COUNT(CASE WHEN datetime(timestamp, 'unixepoch') >= date('now', '-1 day', 'localtime') THEN 1 END) AS users_yesterday, 
-               COUNT(CASE WHEN datetime(timestamp, 'unixepoch') >= date('now', '-7 days', 'localtime') THEN 1 END) AS users_last_week, 
-               COUNT(CASE WHEN datetime(timestamp, 'unixepoch') >= date('now', '-30 days', 'localtime') THEN 1 END) AS users_last_month 
-          FROM bot;`;
-
-        const landing_query = `SELECT COUNT(*) AS total_users, 
-               COUNT(CASE WHEN datetime(timestamp, 'unixepoch') >= date('now', 'localtime') THEN 1 END) AS users_today, 
-               COUNT(CASE WHEN datetime(timestamp, 'unixepoch') >= date('now', '-1 day', 'localtime') THEN 1 END) AS users_yesterday, 
-               COUNT(CASE WHEN datetime(timestamp, 'unixepoch') >= date('now', '-7 days', 'localtime') THEN 1 END) AS users_last_week, 
-               COUNT(CASE WHEN datetime(timestamp, 'unixepoch') >= date('now', '-30 days', 'localtime') THEN 1 END) AS users_last_month 
-          FROM landing;`
-
+        const query = `
+            SELECT COUNT(*) AS total_users,
+                COUNT(CASE WHEN datetime(timestamp, 'unixepoch') >= date('now', 'localtime') THEN 1 END) AS users_today,
+                COUNT(CASE WHEN datetime(timestamp, 'unixepoch') >= date('now', '-1 day', 'localtime') THEN 1 END) AS users_yesterday,
+                COUNT(CASE WHEN datetime(timestamp, 'unixepoch') >= date('now', '-7 days', 'localtime') THEN 1 END) AS users_last_week,
+                COUNT(CASE WHEN datetime(timestamp, 'unixepoch') >= date('now', '-30 days', 'localtime') THEN 1 END) AS users_last_month
+            FROM (
+                SELECT timestamp FROM landing
+                UNION
+                SELECT timestamp FROM bot
+            );
+        `;
     
-        const bot_stats = await sql.runQuery(bot_query);
-        const land_stats = await sql.runQuery(landing_query);                 
+        const stats = await sql.runQuery(query);
 
-        await ctx.reply(`<b>📊 Статистика</b>\n\n- <i>БОТ</i>\nВсего пользователей: <b>${bot_stats[0].total_users}</b>\nЗа сегодня: <b>${bot_stats[0].users_today}</b>\nЗа вчера: <b>${bot_stats[0].users_yesterday}</b>\nЗа эту неделю: <b>${bot_stats[0].users_last_week}</b>\nЗа этот месяц: <b>${bot_stats[0].users_last_month}</b>\n\n- <i>ЛЕНДИНГ</i>\nВсего пользователей: <b>${land_stats[0].total_users}</b>\nЗа сегодня: <b>${land_stats[0].users_today}</b>\nЗа вчера: <b>${land_stats[0].users_yesterday}</b>\nЗа эту неделю: <b>${land_stats[0].users_last_week}</b>\nЗа этот месяц: <b>${land_stats[0].users_last_month}</b>\n\n- <i>СУММАРНО</i>\nВсего пользователей: <b>${bot_stats[0].total_users + land_stats[0].total_users}</b>\nЗа сегодня: <b>${bot_stats[0].users_today + land_stats[0].users_today}</b>\nЗа вчера: <b>${bot_stats[0].users_yesterday + land_stats[0].users_yesterday}</b>\nЗа эту неделю: <b>${bot_stats[0].users_last_week + land_stats[0].users_last_week}</b>\nЗа этот месяц: <b>${bot_stats[0].users_last_month + land_stats[0].users_last_month}</b>`, {
+        await ctx.reply(`<b>📊 Статистика (Общая)</b>\n\nВсего пользователей: <b>${stats[0].total_users}</b>\nЗа сегодня: <b>${stats[0].users_today}</b>\nЗа вчера: <b>${stats[0].users_yesterday}</b>\nЗа эту неделю: <b>${stats[0].users_last_week}</b>\nЗа этот месяц: <b>${stats[0].users_last_month}</b>`, {
             parse_mode: 'HTML'
         });
 
@@ -372,6 +430,25 @@ async function polling() {
                 }
             });
         }
+        else if (ctx.session.step.includes('timer_text')) {
+            if (ctx.message.text.toLowerCase() === 'отмена') {
+                ctx.session.step = 'idle';
+                await ctx.reply('Изменение текста таймера отменено');
+                return;
+            }
+
+            const timer = ctx.session.step.replace('timer_text_', '');
+            const timersSettings = await getTimers();
+            timersSettings[timer].text = ctx.message.text;
+            await writeTimers(timersSettings);
+
+            const keyboard = new InlineKeyboard();
+            keyboard.text('⬅️ Назад к таймерам', 'setting_up_timers').row();
+            await ctx.reply(`Вы изменили текст таймера`, {
+                reply_markup: keyboard
+            });
+            ctx.session.step = 'idle';
+        }
     });
 
     bot.on('callback_query:data', async (ctx) => {
@@ -385,7 +462,6 @@ async function polling() {
 
             const keyboard = new InlineKeyboard();
             keyboard.text('🚫 Включить/выключить таймер', `switch_timer${timer}`).row();
-            keyboard.text('⌛️ Изменить время таймера', `edit_time_timer${timer}`).row();
             keyboard.text('📝 Изменить текст таймера', `edit_text_timer${timer}`).row();
             keyboard.text('⬅️ Назад к таймерам', 'setting_up_timers').row();
 
@@ -393,6 +469,31 @@ async function polling() {
                 reply_markup: keyboard,
                 parse_mode: 'Markdown'
             });
+        }
+        else if (callbackData.startsWith('switch_timer')) {
+            const timer = callbackData.replace('switch_', '');
+            const timersSettings = await getTimers();
+
+            if (timersSettings[timer].enabled) {
+                timersSettings[timer].enabled = false;
+            }
+            else {
+                timersSettings[timer].enabled = true;
+            }
+
+            const keyboard = new InlineKeyboard();
+            keyboard.text('⬅️ Назад к таймерам', 'setting_up_timers').row();
+
+            await writeTimers(timersSettings);
+            await ctx.reply(`Вы ${timersSettings[timer].enabled ? 'включили' : 'выключили'} таймер`, {
+                reply_markup: keyboard
+            });
+        }
+        else if (callbackData.startsWith('edit_text_timer')) {
+            const timer = callbackData.replace('edit_text_', '');
+
+            ctx.session.step = `timer_text_${timer}`
+            await ctx.reply(`Введите новый текст для таймера или отмена. Поддержка Markdown включена`);
         }
     });
 
@@ -410,6 +511,8 @@ async function polling() {
     });
 
     bot.start();
+
+    startTimer();
 }
 
 module.exports = polling;

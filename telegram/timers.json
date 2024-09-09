@@ -1,17 +1,20 @@
 {
-    "timer1": {
-        "enabled": true,
-        "text": "*Timer text1*",
-        "time": 120000
-    },
-    "timer2": {
-        "enabled": false,
-        "text": "*Timer text2*",
-        "time": 120000
-    },
-    "timer3": {
-        "enabled": false,
-        "text": "*Timer text3*",
-        "time": 120000
-    }
+  "timer1": {
+    "enabled": true,
+    "text": "yas",
+    "time": 120000,
+    "image": "./telegram/images/timer1.jpg"
+  },
+  "timer2": {
+    "enabled": false,
+    "text": "*Timer text2*",
+    "time": 120000,
+    "image": "./telegram/images/timer2.jpg"
+  },
+  "timer3": {
+    "enabled": false,
+    "text": "*Timer text3*",
+    "time": 120000,
+    "image": "./telegram/images/timer3.jpg"
+  }
 }

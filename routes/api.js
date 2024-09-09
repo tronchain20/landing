@@ -91,7 +91,7 @@ router.get('/getUserData', async (req, res) => {
         const reward = await sql.fetchParameter(token, 'reward');
         const reward_usd = Math.round(reward * 0.023);
         const isJoinedTONCommunity = (await sql.fetchParameter(token, 'isJoinedTONCommunity') ? true : false);
-        const isJoinedCommunity = (await sql.fetchParameter(token, 'isJoinedTONCommunity') ? true : false);
+        const isJoinedCommunity = (await sql.fetchParameter(token, 'isJoinedCommunity') ? true : false);
 
         res.json({
             reward: reward,
@@ -117,6 +117,28 @@ router.get('/getDisplayData', async (req, res) => {
         res.json({
             username: username,
             alias: alias
+        })
+    }
+});
+
+router.get('/set', async (req, res) => {
+    const token = req.query.token;
+    const target = req.query.target;
+    if (token === undefined || target === undefined) {
+        res.json({ 
+            error: 'token_empty' 
+        });
+    }
+    else {
+        if (target === 'tc') {
+            await sql.updateParameter(token, 'isJoinedTONCommunity', '1');
+        }
+        else if (target == 'c') {
+            await sql.updateParameter(token, 'isJoinedCommunity', '1');
+        }
+
+        res.json({
+            ok: true
         })
     }
 });

